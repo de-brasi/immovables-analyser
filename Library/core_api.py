@@ -620,7 +620,7 @@ def graph_report_clustered_bar_chart():
 
 
 def get_graph_report_frequency_histogram(*args, numeric_characteristics: List[str],
-                                         precision: int = 0, _static_mutable_values: List = [0, ]):
+                                         precision: int = 0, _static_mutable_values: List = [0, ]) -> str:
     """
     Analogue of graph report categorized histogram. Save result as .png file to Graphics directory.
     :param args: for keyword-only argument passing
@@ -628,7 +628,7 @@ def get_graph_report_frequency_histogram(*args, numeric_characteristics: List[st
     :param precision: the accuracy with which the values differ from each other
                 (affects whether two close values fall into different buckets)
     :param _static_mutable_values: instead of function closure; use as report counter
-    :return:
+    :return: path to new report
     """
     assert not args
     assert all([field in db_numeric_characteristics for field in numeric_characteristics])
@@ -653,9 +653,10 @@ def get_graph_report_frequency_histogram(*args, numeric_characteristics: List[st
     plt.title('Histogram')
 
     plt.legend()
-    plt.savefig(root_path + '/Graphics/' + f'report{_static_mutable_values[0]}.png')
+    new_name = root_path + '/Graphics/' + f'report{_static_mutable_values[0]}.png'
+    plt.savefig(new_name)
     _static_mutable_values[0] += 1  # increase report_counter
-    plt.show()
+    return new_name
 
 
 # todo: structure

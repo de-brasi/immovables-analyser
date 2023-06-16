@@ -4,7 +4,8 @@ import sys
 
 from typing import Dict, List
 
-from PyQt5 import QtWidgets, QtGui, QtCore
+from PyQt5 import QtWidgets, QtGui
+from PyQt5.QtCore import Qt
 
 from greeting_window import Ui_StartWidget
 from main_window import Ui_MainWindow
@@ -77,7 +78,35 @@ class MainWindow(QtWidgets.QMainWindow):
 
     # ---------Reports making---------
     def make_and_save_graph_frequency_report(self):
-        pass
+        checkbox_to_attribute = {
+            self.ui.frequency_checkBox_income: 'income',
+            self.ui.frequency_checkBox_age: 'avg_house_age',
+            self.ui.frequency_checkBox_room: 'avg_number_of_rooms',
+            self.ui.frequency_checkBox_bedroom: 'avg_number_of_bedrooms',
+            self.ui.frequency_checkBox_population: 'population',
+            self.ui.frequency_checkBox_price: 'avg_price',
+        }
+
+        selected_attributes = []
+
+        for attr in (
+                self.ui.frequency_checkBox_income, self.ui.frequency_checkBox_age,
+                self.ui.frequency_checkBox_room, self.ui.frequency_checkBox_bedroom,
+                self.ui.frequency_checkBox_population, self.ui.frequency_checkBox_price,
+        ):
+            if attr.isChecked():
+                selected_attributes.append(checkbox_to_attribute[attr])
+
+        report = core.get_graph_report_frequency_histogram(
+            numeric_characteristics=selected_attributes
+        )
+
+        pixmap = QtGui.QPixmap(report)
+        scaled_pixmap = pixmap.scaled(
+            self.ui.field_image_report.size(),
+            Qt.KeepAspectRatio,
+            Qt.SmoothTransformation)
+        self.ui.field_image_report.setPixmap(scaled_pixmap)
 
     def make_and_save_common_text_report(self):
         restrictions = self._get_restrictions()

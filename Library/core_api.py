@@ -536,9 +536,18 @@ def make_common_text_report(*args, selectable_columns: List[str], row_selection_
     # Using pandas instead of sql queries is consistent with task requirement.
 
     merged_dataframe = make_union_pandas_dataframe()
-    extra_row_discarding = merged_dataframe.query(make_selection_query(row_selection_rule)).copy()
-    select_columns = extra_row_discarding[selectable_columns]
-    return select_columns.to_string()
+    if row_selection_rule:
+        extra_row_discarding = merged_dataframe.query(make_selection_query(row_selection_rule)).copy()
+    else:
+        extra_row_discarding = merged_dataframe.copy()
+
+    if selectable_columns:
+        select_columns = extra_row_discarding[selectable_columns]
+    else:
+        # select all
+        select_columns = extra_row_discarding
+
+    return select_columns.to_string(justify='left')
 
 
 def make_statistic_text_report(attribute_name: str) -> str:
@@ -636,7 +645,6 @@ def get_graph_report_frequency_histogram(*args, numeric_characteristics: List[st
     plt.title('Histogram')
 
     plt.legend()
-    # todo: make .png
     plt.savefig(root_path + '/Graphics/' + f'report{_static_mutable_values[0]}.png')
     _static_mutable_values[0] += 1  # increase report_counter
     plt.show()
@@ -650,17 +658,3 @@ def graph_report_categorized_box_whisker_diagram():
 # todo: structure
 def graph_report_categorized_scatter_plot():
     pass
-
-# WITH common_table AS (
-#     SELECT area_id
-#     FROM area_id_to_avg_house_info
-#     WHERE area_id IN (
-#         SELECT a.area_id
-#         FROM area_id_to_area_info a
-#         JOIN area_id_to_avg_house_info b
-#         ON a.area_id = b.area_id
-#         WHERE a.address = "hello world" AND b.avg_house_age = 0
-#     )
-# )
-# DELETE FROM area_id_to_area_info WHERE area_id = common_table.area_id
-# DELETE FROM area_id_to_avg_house_info WHERE area_id = common_table.area_id

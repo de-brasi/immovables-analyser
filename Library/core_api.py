@@ -511,7 +511,9 @@ def make_union_pandas_dataframe() -> pd.DataFrame:
     return merged
 
 
-def make_common_text_report(*args, selectable_columns: List[str], row_selection_rule: Dict[str, str]) -> str:
+def make_common_text_report(*args, selectable_columns: List[str],
+                            row_selection_rule: Dict[str, str],
+                            _static_mutable_values: List = [0, ]) -> str:
     """
     row_selection_rule is a map from string to string.
     Keys is a names of restriction's field, values of map is a compare sign and comparable value.
@@ -524,6 +526,7 @@ def make_common_text_report(*args, selectable_columns: List[str], row_selection_
     :param args:
     :param selectable_columns:
     :param row_selection_rule:
+    :param _static_mutable_values: service variable
     :return: Pandas dataframe as string
     """
     assert not args
@@ -547,7 +550,12 @@ def make_common_text_report(*args, selectable_columns: List[str], row_selection_
         # select all
         select_columns = extra_row_discarding
 
-    return select_columns.to_string(justify='left')
+    res = select_columns.to_string(justify='left')
+    with open(root_path + '/Graphics/' + f'common_report{_static_mutable_values[0]}.txt', 'w') as f:
+        _static_mutable_values[0] += 1  # increase report_counter
+        f.write(res)
+
+    return res
 
 
 def make_statistic_text_report(attribute_name: str) -> str:

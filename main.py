@@ -29,7 +29,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # Reports
         self.ui.button_make_graph_frequency_report.clicked.connect(self.make_and_save_graph_frequency_report)
         self.ui.button_make_common_text_report.clicked.connect(self.make_and_save_common_text_report)
-        self.ui.button_make_static_text_report.clicked.connect(self.make_and_save_static_text_report)
+        self.ui.button_make_statistic_text_report.clicked.connect(self.make_and_save_statistic_text_report)
 
     # ---------Data operations---------
     def add_record(self):
@@ -91,8 +91,19 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.field_text_report.setText(report)
         print(report)
 
-    def make_and_save_static_text_report(self):
-        pass
+    def make_and_save_statistic_text_report(self):
+        selected_value = self.ui.one_field_comboBox.currentText()
+        name_to_attribute = {
+            'Доход': 'income',
+            'Возраст': 'avg_house_age',
+            'Число комнат': 'avg_number_of_rooms',
+            'Число спален': 'avg_number_of_bedrooms',
+            'Число населения': 'population',
+            'Цена': 'avg_price',
+        }
+        report = core.make_statistic_text_report(name_to_attribute[selected_value])
+        self.ui.field_text_report.setText(report)
+        print(report)
 
     # ---------Utils---------
     def _get_restrictions(self) -> Dict[str, str]:
@@ -257,4 +268,4 @@ if __name__ == "__main__":
     # core.get_graph_report_frequency_histogram(numeric_characteristics=['avg_house_age'])
 
 
-# /home/ilya/WorkSpace/Projects/immovables_analyser/USA_Housing_dataset.csv?
+# /home/ilya/WorkSpace/Projects/immovables_analyser/USA_Housing_dataset.csv

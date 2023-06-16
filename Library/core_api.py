@@ -294,7 +294,9 @@ class Selector:
 
 def init_database(source_dataset: str):
     """
-    Make SQL from CSV
+    Make SQL from CSV.
+    It believes that the file exists, otherwise undefined behaviour.
+
     :param source_dataset: source valid dataset path
     :return: connection object
     """
@@ -367,9 +369,13 @@ def init_database(source_dataset: str):
     connection.close()
 
 
-def add_record_to_database(avg_area_income: float, avg_area_house_age: float,
-                           avg_area_number_of_rooms: float, avg_area_number_of_bedrooms: float,
-                           area_population: float, price: float, address: str) -> int:
+def add_record_to_database(avg_area_income: float,
+                           avg_area_house_age: float,
+                           avg_area_number_of_rooms: float,
+                           avg_area_number_of_bedrooms: float,
+                           area_population: float,
+                           price: float,
+                           address: str) -> int:
     # TODO: refactor according to using Selector style
     """
     Create new record in database.
@@ -468,21 +474,22 @@ def delete_record_from_database(selector: Selector):
     ##################################################
 
 
-def update_data_in_database(selector: Selector, kwargs):
+def update_data_in_database(*args, selector: Selector, kwargs: dict, table_name: str):
     """
     Update kwargs['table_name'] table with other values in kwargs.
     Updated rows in the table are selected according to selector.
     :param selector:
     :param kwargs:
+    :param table_name:
     :return:
     """
-    assert 'table_name' in kwargs.keys()
+    assert not args
 
     connection = sqlite3.connect(db_name)
     cursor = connection.cursor()
 
-    values_to_update = {k: v for k, v in kwargs.items() if k != 'table_name'}
-    update_query = selector.get_update_query_for_table(kwargs['table_name'], values_to_update)
+    values_to_update = {k: v for k, v in kwargs.items()}
+    update_query = selector.get_update_query_for_table(table_name, values_to_update)
     cursor.execute(update_query)
     connection.commit()
 

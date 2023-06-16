@@ -78,24 +78,14 @@ class MainWindow(QtWidgets.QMainWindow):
 
     # ---------Reports making---------
     def make_and_save_graph_frequency_report(self):
-        checkbox_to_attribute = {
-            self.ui.frequency_checkBox_income: 'income',
-            self.ui.frequency_checkBox_age: 'avg_house_age',
-            self.ui.frequency_checkBox_room: 'avg_number_of_rooms',
-            self.ui.frequency_checkBox_bedroom: 'avg_number_of_bedrooms',
-            self.ui.frequency_checkBox_population: 'population',
-            self.ui.frequency_checkBox_price: 'avg_price',
-        }
-
-        selected_attributes = []
-
-        for attr in (
-                self.ui.frequency_checkBox_income, self.ui.frequency_checkBox_age,
-                self.ui.frequency_checkBox_room, self.ui.frequency_checkBox_bedroom,
-                self.ui.frequency_checkBox_population, self.ui.frequency_checkBox_price,
-        ):
-            if attr.isChecked():
-                selected_attributes.append(checkbox_to_attribute[attr])
+        selected_attributes = self._get_selected_checkbox(
+            self.ui.frequency_checkBox_income,
+            self.ui.frequency_checkBox_age,
+            self.ui.frequency_checkBox_room,
+            self.ui.frequency_checkBox_bedroom,
+            self.ui.frequency_checkBox_population,
+            self.ui.frequency_checkBox_price,
+        )
 
         report = core.get_graph_report_frequency_histogram(
             numeric_characteristics=selected_attributes
@@ -112,8 +102,14 @@ class MainWindow(QtWidgets.QMainWindow):
         restrictions = self._get_restrictions()
         self._clear_restriction_fields()
 
-        columns = []
-        # TODO: добавить выбор колонок для вывода
+        columns = self._get_selected_checkbox(
+            self.ui.common_checkBox_income,
+            self.ui.common_checkBox_age,
+            self.ui.common_checkBox_room,
+            self.ui.common_checkBox_bedroom,
+            self.ui.common_checkBox_population,
+            self.ui.common_checkBox_price,
+        )
 
         report = core.make_common_text_report(selectable_columns=columns,
                                               row_selection_rule=restrictions)
@@ -157,7 +153,7 @@ class MainWindow(QtWidgets.QMainWindow):
             res['avg_price'] = self.ui.input_selector_price.text()
 
         if self.ui.input_selector_address.text():
-            res['address'] = self.ui.input_selector_address.text()
+            res['address'] = f'=="{self.ui.input_selector_address.text()}"'
 
         return res
 
@@ -231,6 +227,27 @@ class MainWindow(QtWidgets.QMainWindow):
         ):
             field.clear()
 
+    def _get_selected_checkbox(self,
+                               income: QtWidgets.QCheckBox,
+                               age: QtWidgets.QCheckBox,
+                               room: QtWidgets.QCheckBox,
+                               bedroom: QtWidgets.QCheckBox,
+                               population: QtWidgets.QCheckBox,
+                               price: QtWidgets.QCheckBox):
+        checked = []
+        mapping = {
+            income: 'income',
+            age: 'avg_house_age',
+            room: 'avg_number_of_rooms',
+            bedroom: 'avg_number_of_bedrooms',
+            population: 'population',
+            price: 'avg_price',
+        }
+        for attr in (income, age, room, bedroom, population, price):
+            if attr.isChecked():
+                checked.append(mapping[attr])
+        return checked
+
 
 class GreetingWindow(QtWidgets.QWidget):
     def __init__(self, main: MainWindow):
@@ -272,29 +289,5 @@ if __name__ == "__main__":
     greeting_window = GreetingWindow(main_window)
     greeting_window.show()
     app.exit(app.exec())
-
-    ##############################################
-    # dataset_path = './USA_Housing_dataset.csv'
-    # core.init_database(dataset_path)
-    # core.add_record_to_database(0, 0, 0, 0, 0, 0, "hello world")
-    #
-    # core.update_data_in_database(
-    #     core.Selector(restrictions={'address': 'hello world', 'avg_house_age': '=0'}),
-    #     {'table_name': 'area_id_to_avg_house_info', 'avg_house_age': '0'}
-    # )
-    #
-    # stat_report = core.make_statistic_text_report('avg_house_age')
-    # print(stat_report)
-    #
-    # print()
-    # report = core.make_common_text_report(
-    #     selectable_columns=['area_id', 'address', 'avg_house_age'],
-    #     row_selection_rule={'address': '=="hello world"'}
-    # )
-    # print(report)
-
-    # core.get_graph_report_frequency_histogram(numeric_characteristics=['income'])
-    # core.get_graph_report_frequency_histogram(numeric_characteristics=['avg_house_age'])
-
 
 # /home/ilya/WorkSpace/Projects/immovables_analyser/USA_Housing_dataset.csv

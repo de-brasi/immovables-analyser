@@ -2,6 +2,10 @@
 import Library.core_api as core
 
 if __name__ == "__main__":
+    """
+    Each launch of the program creates a new database from the dataset, and can delete previous changes. 
+    Each launch of the program can delete all saved reports and replace them with new ones with the same names.
+    """
     dataset_path = './USA_Housing_dataset.csv'
     core.init_database(dataset_path)
     # core.add_record_to_database(0, 0, 0, 0, 0, 0, "hello world")
@@ -20,5 +24,6 @@ if __name__ == "__main__":
     #     row_selection_rule={'address': '=="hello world"'}
     # )
     # print(report)
-    #
+
     core.get_graph_report_frequency_histogram(numeric_characteristics=['income'])
+    core.get_graph_report_frequency_histogram(numeric_characteristics=['avg_house_age'])

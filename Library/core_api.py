@@ -44,6 +44,7 @@ class Selector:
         :param expected_params: keys from table that must be got
         :param restrictions: restrictions on which records are selected
         """
+        assert not args
         self.possible_prefixes = ('>', '<', '>=', '<=', '=', '!=')
         self.restrictions = restrictions
 
@@ -518,6 +519,7 @@ def make_common_text_report(*args, selectable_columns: List[str], row_selection_
     :param row_selection_rule:
     :return: Pandas dataframe as string
     """
+    assert not args
 
     def make_selection_query(selection_rule: Dict[str, str]) -> str:
         res = ' and '.join([f"{key}{value}" for key, value in selection_rule.items()])
@@ -581,7 +583,7 @@ def make_statistic_text_report(attribute_name: str) -> str:
     return statistics_dataframe.to_string()
 
 
-def text_report_summary_tables(database_name: str):
+def text_report_summary_tables():
     # TODO: пересмотреть подход что есть качественная, что есть количественная характеристика
     # Due to the absence of two descriptive parameters in the database, the function is not implemented.
     raise RuntimeError("Function call not expected")
@@ -593,15 +595,18 @@ def graph_report_clustered_bar_chart():
     raise RuntimeError("Function call not expected")
 
 
-# todo: structure
-def get_graph_report_frequency_histogram(*args, numeric_characteristics: List[str], precision: int = 0):
+def get_graph_report_frequency_histogram(*args, numeric_characteristics: List[str],
+                                         precision: int = 0, _static_mutable_values: List = [0, ]):
     """
-    Analogue of graph report categorized histogram.
-    :param args:
-    :param numeric_characteristics:
-    :param precision:
+    Analogue of graph report categorized histogram. Save result as .png file to Graphics directory.
+    :param args: for keyword-only argument passing
+    :param numeric_characteristics: analyzed characteristics
+    :param precision: the accuracy with which the values differ from each other
+                (affects whether two close values fall into different buckets)
+    :param _static_mutable_values: instead of function closure; use as report counter
     :return:
     """
+    assert not args
     assert all([field in db_numeric_characteristics for field in numeric_characteristics])
 
     union_dataframe = make_union_pandas_dataframe()
@@ -624,7 +629,9 @@ def get_graph_report_frequency_histogram(*args, numeric_characteristics: List[st
     plt.title('Histogram')
 
     plt.legend()
-
+    # todo: make .png
+    plt.savefig(root_path + '/Graphics/' + f'report{_static_mutable_values[0]}.png')
+    _static_mutable_values[0] += 1  # increase report_counter
     plt.show()
 
 

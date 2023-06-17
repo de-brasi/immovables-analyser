@@ -551,15 +551,14 @@ def make_and_save_common_text_report(*args, selectable_columns: List[str],
         select_columns = extra_row_discarding
 
     result = select_columns.to_string(justify='left')
-    with open(root_path + '/Graphics/' + f'common_report{_static_mutable_values[0]}.txt', 'w') as f:
+    with open(root_path + '/Output/' + f'common_report{_static_mutable_values[0]}.txt', 'w') as f:
         _static_mutable_values[0] += 1  # increase report_counter
         f.write(result)
 
     return result
 
 
-def make_and_save_statistic_text_report(attribute_name: str) -> str:
-    # TODO: save
+def make_and_save_statistic_text_report(attribute_name: str, _static_mutable_values: List = [0, ]) -> str:
     """
     Generates a statistical report based on the type of the passed attribute name.
 
@@ -569,6 +568,7 @@ def make_and_save_statistic_text_report(attribute_name: str) -> str:
     The function uses long operations. Asymptotic complexity O(n^2), where n is size of dataset.
 
     :param attribute_name: name of attribute
+    :param _static_mutable_values
     :return:
     """
     assert attribute_name in (db_descriptive_characteristics + db_numeric_characteristics)
@@ -605,7 +605,12 @@ def make_and_save_statistic_text_report(attribute_name: str) -> str:
     else:
         raise RuntimeError(f"Unexpected attribute name {attribute_name}")
 
-    return statistics_dataframe.to_string()
+    result = statistics_dataframe.to_string(justify='left')
+    with open(root_path + '/Output/' + f'statistic_report{_static_mutable_values[0]}.txt', 'w') as f:
+        _static_mutable_values[0] += 1  # increase report_counter
+        f.write(result)
+
+    return result
 
 
 def text_report_summary_tables():

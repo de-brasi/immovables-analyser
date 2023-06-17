@@ -511,9 +511,9 @@ def make_union_pandas_dataframe() -> pd.DataFrame:
     return merged
 
 
-def make_common_text_report(*args, selectable_columns: List[str],
-                            row_selection_rule: Dict[str, str],
-                            _static_mutable_values: List = [0, ]) -> str:
+def make_and_save_common_text_report(*args, selectable_columns: List[str],
+                                     row_selection_rule: Dict[str, str],
+                                     _static_mutable_values: List = [0, ]) -> str:
     """
     row_selection_rule is a map from string to string.
     Keys is a names of restriction's field, values of map is a compare sign and comparable value.
@@ -550,15 +550,16 @@ def make_common_text_report(*args, selectable_columns: List[str],
         # select all
         select_columns = extra_row_discarding
 
-    res = select_columns.to_string(justify='left')
+    result = select_columns.to_string(justify='left')
     with open(root_path + '/Graphics/' + f'common_report{_static_mutable_values[0]}.txt', 'w') as f:
         _static_mutable_values[0] += 1  # increase report_counter
-        f.write(res)
+        f.write(result)
 
-    return res
+    return result
 
 
-def make_statistic_text_report(attribute_name: str) -> str:
+def make_and_save_statistic_text_report(attribute_name: str) -> str:
+    # TODO: save
     """
     Generates a statistical report based on the type of the passed attribute name.
 

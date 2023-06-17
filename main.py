@@ -29,8 +29,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Reports
         self.ui.button_make_graph_frequency_report.clicked.connect(self.make_and_save_graph_frequency_report)
-        self.ui.button_make_common_text_report.clicked.connect(self.make_and_save_common_text_report)
-        self.ui.button_make_statistic_text_report.clicked.connect(self.make_and_save_statistic_text_report)
+        self.ui.button_make_common_text_report.clicked.connect(self.make_common_text_report)
+        self.ui.button_make_statistic_text_report.clicked.connect(self.make_statistic_text_report)
 
     # ---------Data operations---------
     def add_record(self):
@@ -98,7 +98,7 @@ class MainWindow(QtWidgets.QMainWindow):
             Qt.SmoothTransformation)
         self.ui.field_image_report.setPixmap(scaled_pixmap)
 
-    def make_and_save_common_text_report(self):
+    def make_common_text_report(self):
         restrictions = self._get_restrictions()
         self._clear_restriction_fields()
 
@@ -111,12 +111,12 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ui.common_checkBox_price,
         )
 
-        report = core.make_common_text_report(selectable_columns=columns,
-                                              row_selection_rule=restrictions)
+        report = core.make_and_save_common_text_report(selectable_columns=columns,
+                                                       row_selection_rule=restrictions)
         self.ui.field_text_report.setText(report)
         print(report)
 
-    def make_and_save_statistic_text_report(self):
+    def make_statistic_text_report(self):
         selected_value = self.ui.one_field_comboBox.currentText()
         name_to_attribute = {
             'Доход': 'income',
@@ -126,7 +126,7 @@ class MainWindow(QtWidgets.QMainWindow):
             'Число населения': 'population',
             'Цена': 'avg_price',
         }
-        report = core.make_statistic_text_report(name_to_attribute[selected_value])
+        report = core.make_and_save_statistic_text_report(name_to_attribute[selected_value])
         self.ui.field_text_report.setText(report)
         print(report)
 

@@ -210,7 +210,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
         return res
 
-    def _get_updated_tables(self, update_data: Dict[str, str]) -> List[str]:
+    @staticmethod
+    def _get_updated_tables(update_data: Dict[str, str]) -> List[str]:
         used_tables = set()
         for key in update_data:
             for table_name in db_separated_tables_columns_distribution.keys():
@@ -227,8 +228,8 @@ class MainWindow(QtWidgets.QMainWindow):
         ):
             field.clear()
 
-    def _get_selected_checkbox(self,
-                               income: QtWidgets.QCheckBox,
+    @staticmethod
+    def _get_selected_checkbox(income: QtWidgets.QCheckBox,
                                age: QtWidgets.QCheckBox,
                                room: QtWidgets.QCheckBox,
                                bedroom: QtWidgets.QCheckBox,
@@ -289,5 +290,3 @@ if __name__ == "__main__":
     greeting_window = GreetingWindow(main_window)
     greeting_window.show()
     app.exit(app.exec())
-
-# /home/ilya/WorkSpace/Projects/immovables_analyser/USA_Housing_dataset.csv
